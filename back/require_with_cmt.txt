@@ -1,0 +1,29 @@
+# 🚀 FastAPI 프로젝트 필수 패키지 목록
+
+# 📌 FastAPI 웹 프레임워크 (비동기 API 지원)
+fastapi[all]  # [all] 옵션 포함 (CORS, Starlette 등 추가 기능 지원)
+
+# 📌 비동기 서버 실행기 (FastAPI 실행)
+uvicorn  # ASGI 서버, FastAPI 실행에 필요
+
+# 📌 데이터 검증 및 모델링 (FastAPI에서 필수)
+pydantic  # FastAPI 데이터 모델 및 검증을 위한 라이브러리
+
+# 📌 PostgreSQL 데이터베이스 ORM (SQLAlchemy + PostgreSQL 연결)
+sqlalchemy  # ORM을 통해 DB 관리
+psycopg2-binary  # PostgreSQL 드라이버 (SQLAlchemy와 함께 사용)
+
+# 📌 개발 도중 코드 변경 감지 후 자동 재실행 (개발 편의성 개선)
+watchfiles  # FastAPI의 `--reload` 기능을 개선
+
+# 📌 LangChain (AI 법률 챗봇 구현)
+langchain  # GPT 모델과의 통합, 법률 데이터 학습
+
+# 📌 OpenAI API (GPT 모델 연동)
+openai  # OpenAI 기반 AI 모델 호출 (GPT-3.5/4 등)
+
+# 📌 파일 업로드 및 Multipart 지원 (FastAPI에서 Form 데이터 처리)
+python-multipart  # FastAPI에서 파일 업로드 및 Form 데이터 처리에 필요
+
+# 📌 PDF 변환 및 미리보기 (법률 서식 `.hwp → .pdf` 변환용)
+PyMuPDF  # PDF 파일 읽기 및 변환 (fitz 모듈 포함)
