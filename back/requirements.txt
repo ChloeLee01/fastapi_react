@@ -8,3 +8,4 @@ langchain
 openai
 python-multipart
 PyMuPDF
+python-dotenv
