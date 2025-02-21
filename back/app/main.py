@@ -1,11 +1,12 @@
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, Response
-from api.endpoints import users  # 추가된 라우터 파일
+from .routes import users  # 상대 경로로 수정
 from sqlalchemy.orm import Session
 from sqlalchemy import text
+from .core import get_db  # core 임포트도 수정
 import os
-from back.app.core import *
+
 # FastAPI 애플리케이션 생성
 app = FastAPI()
 
@@ -19,13 +20,13 @@ app.add_middleware(
 )
 
 # 라우터 등록
-app.include_router(users.router , prefix="/api", tags=["users"])
+app.include_router(users.router , prefix="/api", tags=["users"])    
 
 
 @app.get("/favicon.ico")
 async def favicon():
     # React가 실행되지 않을 때 기본 favicon 제공 : 404 오류 방지
-    favicon_path = "front/public/favicon.ico"
+    favicon_path = "../front/public/favicon.ico"  # back 폴더에서 상위로 올라가서 front 폴더로 접근
     if os.path.exists(favicon_path):
         return FileResponse(favicon_path)
     return Response(status_code=204)  # No Content
@@ -36,7 +37,7 @@ def read_root():
     return {"message": "Hello, FastAPI!"}
 
 
-@app.get("/healthcheck")
+@app.get("/checkdb")
 def healthcheck(db: Session = Depends(get_db)):
     try:
         # 간단한 쿼리를 실행하여 DB 연결 확인
