@@ -1,8 +1,11 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, Response
 from api.endpoints import users  # 추가된 라우터 파일
-
+from sqlalchemy.orm import Session
+from sqlalchemy import text
+import os
+from back.app.core import *
 # FastAPI 애플리케이션 생성
 app = FastAPI()
 
@@ -31,6 +34,16 @@ async def favicon():
 @app.get("/")
 def read_root():
     return {"message": "Hello, FastAPI!"}
+
+
+@app.get("/healthcheck")
+def healthcheck(db: Session = Depends(get_db)):
+    try:
+        # 간단한 쿼리를 실행하여 DB 연결 확인
+        db.execute(text("SELECT 1"))
+        return {"status": "DB 연결 성공!"}
+    except Exception as e:
+        return {"status": "DB 연결 실패", "error": str(e)}
 
 # 서버 실행 명령:
 # uvicorn main:app

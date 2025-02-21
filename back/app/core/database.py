@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from config import DATABASE_URL  # ✅ config.py에서 DB 설정 가져오기
+from back.app.core.config import DATABASE_URL  # ✅ 상대 경로로 수정
 
 # ✅ SQLAlchemy 엔진 생성 (커넥션 풀 설정 추가)
 engine = create_engine(
