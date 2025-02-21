@@ -2,6 +2,7 @@ from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, Response
 from .routes import users  # 상대 경로로 수정
+from .routes import precedent
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 from .core import get_db  # core 임포트도 수정
@@ -20,7 +21,8 @@ app.add_middleware(
 )
 
 # 라우터 등록
-app.include_router(users.router , prefix="/api", tags=["users"])    
+app.include_router(users.router , prefix="/api", tags=["users"])
+app.include_router(precedent.router, prefix="/query", tags=["Precedents"])    
 
 
 @app.get("/favicon.ico")
