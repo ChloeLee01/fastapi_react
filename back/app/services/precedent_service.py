@@ -6,7 +6,7 @@ def search_precedents(keyword: str):
     키워드를 기반으로 precedent 테이블을 검색하는 함수.
     - '법원' 또는 '지원'이 포함된 단어는 court 컬럼에서 검색.
     - 나머지 단어들은 c_name 컬럼에서 검색.
-    - '법원' 키워드가 없으면, c_name, court, c_number에서 검색.
+    - '법원' 키워드가 없으면, c_name, c_number에서 검색.
     """
 
     # ✅ 키워드 전처리
@@ -56,15 +56,17 @@ def search_precedents(keyword: str):
     # ✅ SQL 실행
     results = execute_sql(query, params)
 
-    # ✅ 데이터 변환 (날짜 변환 추가)
+    # ✅ 데이터 변환 (날짜 변환 + 안정성 강화)
     def convert_row(row):
         row_dict = dict(row)
-        try:
-            if isinstance(row_dict.get("j_date"), (datetime.date, datetime.datetime)):
-                row_dict["j_date"] = row_dict["j_date"].isoformat()  # ✅ 날짜를 문자열로 변환
-        except Exception as e:
-            row_dict["j_date"] = None  # ✅ 변환 오류 발생 시 None 처리
-            print(f"❌ 날짜 변환 오류: {e}")
+        
+        # ✅ j_date가 `None`이면 기본값 처리
+        j_date_value = row_dict.get("j_date")
+        
+        if isinstance(j_date_value, (datetime.date, datetime.datetime)):
+            row_dict["j_date"] = j_date_value.isoformat()
+        else:
+            row_dict["j_date"] = None  # ✅ None 처리하여 JSON 직렬화 오류 방지
 
         return row_dict
 
