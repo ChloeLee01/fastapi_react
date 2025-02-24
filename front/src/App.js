@@ -1,24 +1,23 @@
-import React, { useEffect, useState } from "react";
+// front/src/App.jsx
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import PrecedentSearch from "./components/Precedent";
+import PrecedentDetail from "./components/Detail";
 
 const App = () => {
-  const [users, setUsers] = useState([]);
-
-  useEffect(() => {
-    fetch("http://localhost:8000/api/users")  // FastAPI 백엔드에서 데이터 요청
-      .then((res) => res.json())
-      .then((data) => setUsers(data))
-      .catch((error) => console.error("Error fetching users:", error));
-  }, []);
-
   return (
-    <div>
-      <h1>사용자 목록</h1>
-      <ul>
-        {users.map((user) => (
-          <li key={user.id}>{user.name}</li>
-        ))}
-      </ul>
-    </div>
+    <Router>
+      <Routes>
+        {/* 홈 페이지 */}
+        <Route path="/" element={<Home />} />
+
+        {/* 판례 검색 페이지 */}
+        <Route path="/precedents/search" element={<PrecedentSearch />} />
+
+        {/* 판례 상세 페이지 (판례 번호 기반) */}
+        <Route path="/precedents/:caseNumber" element={<PrecedentDetail />} />
+      </Routes>
+    </Router>
   );
 };
 

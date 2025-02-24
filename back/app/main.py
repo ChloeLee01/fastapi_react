@@ -1,11 +1,9 @@
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, Response
-from .routes import users  # 상대 경로로 수정
+from fastapi.responses import FileResponse, Response, JSONResponse
+from .routes import users  
 from .routes import precedent
-from sqlalchemy.orm import Session
-from sqlalchemy import text
-from .core import get_db  # core 임포트도 수정
+from .routes import checkdb
 import os
 
 # FastAPI 애플리케이션 생성
@@ -21,9 +19,9 @@ app.add_middleware(
 )
 
 # 라우터 등록
-app.include_router(users.router , prefix="/api", tags=["users"])
-app.include_router(precedent.router, prefix="/query", tags=["Precedents"])    
-
+app.include_router(users.router, prefix="/api/users", tags=["users"])
+app.include_router(checkdb.router, prefix="/api/check", tags=["check"])    
+app.include_router(precedent.router, prefix="/api/search", tags=["search"])
 
 @app.get("/favicon.ico")
 async def favicon():
@@ -38,15 +36,11 @@ async def favicon():
 def read_root():
     return {"message": "Hello, FastAPI!"}
 
+# ✅ FastAPI에서 404 및 500 오류를 JSON으로 반환하도록 설정
+@app.exception_handler(404)
+async def not_found_handler(request, exc):
+    return JSONResponse(status_code=404, content={"error": "해당 경로를 찾을 수 없습니다."})
 
-@app.get("/checkdb")
-def healthcheck(db: Session = Depends(get_db)):
-    try:
-        # 간단한 쿼리를 실행하여 DB 연결 확인
-        db.execute(text("SELECT 1"))
-        return {"status": "DB 연결 성공!"}
-    except Exception as e:
-        return {"status": "DB 연결 실패", "error": str(e)}
-
-# 서버 실행 명령:
-# uvicorn main:app
+@app.exception_handler(500)
+async def internal_server_error_handler(request, exc):
+    return JSONResponse(status_code=500, content={"error": "서버 내부 오류가 발생했습니다."})
